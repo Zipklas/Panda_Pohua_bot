@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  telegram-bot:
+    build: .
+    container_name: my-telegram-bot
+    restart: unless-stopped
+    environment:
+      TELEGRAM_TOKEN: "8317300591:AAEVoa_32YGPVzAKYUjMcrfVnuDkYnBciV0"
+    volumes:
+      - ./bot.db:/app/bot.db
+      - ./secret.key:/app/secret.key
+
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    ports:
+      - "5002:5002"
+    environment:
+      - LOAD_ONLY=en,ru
+    volumes:
+      - ./libretranslate_models:/home/libretranslate/.local/share/argos-translate
+    command: [
+      "--host", "0.0.0.0", 
+      "--port", "5002",
+      "--load-only", "en,ru",
+      "--update-models"
+    ]
